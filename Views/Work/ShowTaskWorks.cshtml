@@ -1,0 +1,285 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+}
+
+@using System.ComponentModel.DataAnnotations;
+@using System.Reflection;
+@model Work
+
+@{
+    var works = (List<Work>)ViewBag.works;
+    var _taskId = ViewBag.taskId;
+}
+<h1>Task Works</h1>
+
+<div class="container">
+
+    @if (User.Identity.IsAuthenticated && User.IsInRole("Developer"))
+    {
+        <div>
+            <a id="newWork" class="btn btn-primary" style="float:right" href="/Work/Create">New Work</a>
+            <a id="submitBtn" class="btn btn-primary" hidden style="float:right">Submit All works</a>
+        </div>
+    }
+
+    <table class="table table-hover table-dark">
+        <thead>
+            <tr>
+                <th scope="col">Title</th>
+                <th scope="col">Description</th>
+                <th scope="col">Work File</th>
+                <th scope="col">Status</th>
+            </tr>
+        </thead>
+        <tbody>
+
+            @foreach (var work in works)
+            {
+                <tr id="@work.ID">
+                    <td>@work.Title</td>
+                    <td>@work.Description</td>
+                    <td><a href="/Work/GetFile?workId=@work.ID" target="_blank">@work.FileName</a></td>
+
+                    @if (work.Status == HelperClass.Status.PendingApproval)
+                    {
+                        <td>@(work.Status.GetType().GetMember(work.Status.ToString()).First().GetCustomAttribute<DisplayAttribute>().GetName())</td>
+                    }
+                    else
+                    {
+                        <td>@work.Status</td>
+                    }
+                    <td>
+                        @if (User.Identity.IsAuthenticated && User.IsInRole("TeamLeader") && work.Status == HelperClass.Status.PendingApproval)
+                        {
+                            <a id="approvedBtn" class="btn btn-info" href="/Work/ApproveWork?workId=@work.ID">Approve</a>
+                        }
+                        @if (User.Identity.IsAuthenticated && User.IsInRole("Developer") && work.Status != HelperClass.Status.Approved)
+                        {
+                            <a class="btn btn-info" href="/Work/EditWork?workId=@work.ID">Edit</a>
+                        }
+                        <input type="button" value="View" id="@work.ID" class="viewModal btn btn-primary" data-toggle="modal" data-target="#exampleModalCenter">
+
+                        @*<a class="btn btn-info" href="/Work/EditWork?workId=@work.ID">View</a>*@
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+    @if (User.Identity.IsAuthenticated && User.IsInRole("Developer") && works.Count > 0)
+    {
+        <div>
+            <a class="btn btn-primary" href="/Task/ShowProjectTasks?projectId=@works[0].Task.Sprint.ProjectID"> Go To Tasks </a>
+        </div>
+    }
+    else if (User.Identity.IsAuthenticated && works.Count > 0)
+    {
+        <div>
+            <a class="btn btn-primary" href="/Task/ShowSprintTasks?sprintId=@works[0].Task.Sprint.ID"> Go To Tasks </a>
+        </div>
+    }
+</div>
+
+
+<!-- Modal -->
+<div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLongTitle">Your Work</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label for="Title" class="col-form-label">Title</label>
+                    <input id="workTitle" readonly type="text" class="form-control">
+                </div>
+                <div class="form-group">
+                    <label for="Description" class="col-form-label">Description</label>
+                    <textarea id="workDescription" readonly class="form-control"></textarea>
+                </div>
+                <div id="rejectedNotesDev" class="form-group" hidden>
+                    <label for="rejectedNotes" class="col-form-label">Rejected Notes</label>
+                    <textarea id="rejectedNotes" class="form-control"></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="workFile" class="col-form-label">Work File</label><br />
+                    <a id="workFile"></a>
+                </div>
+            </div>
+            <div class="modal-footer">
+                @if (User.IsInRole("TeamLeader"))
+                {
+                    <button id="rejectedBtn" class="btn btn-primary" hidden> Reject </button>
+
+                    <button id="save" type="button" class="btn btn-primary" hidden>Save changes</button>
+                }
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<script>
+
+    $('document').ready(function () {
+        var workID;
+
+        $('input[type=button]').click(function () {
+            debugger
+            if ($(this).hasClass("viewModal"))
+                workID = $(this).closest('tr').attr('id');
+
+            $.ajax({
+                url: '/Work/GetWork',
+                data: { workId: workID },
+                contentType: "application/json",
+                dataType: "json",
+                success: function (data) {
+                    debugger;
+                    fillModal(data);
+                    if ($("#rejectedBtn").length != 0 && data.Status == @((int)HelperClass.Status.PendingApproval)) {
+                        $("#rejectedBtn").prop('hidden', false);
+                    }
+
+                },
+                error: function () {
+                    alert("error1");
+                }
+            });
+        });
+
+        @*$.ajax({
+            url: '/Task/CheckTaskComplete',
+            data: { taskId:@_taskId},
+            contentType: "application/json",
+            dataType: "json",
+            success: function (data) {
+                debugger
+                if (data) {
+                    $("#submitBtn").prop('hidden', true);
+                    $("#newWork").prop('hidden', true);
+                }
+            },
+            error: function () {
+                alert("error3");
+            }
+        });*@
+        $("#rejectedBtn").click(function () {
+            $("#rejectedNotesDev").prop('hidden', false);
+            $("#save").prop('hidden', false);
+        });
+
+        $("#save").click(function () {
+            $.ajax({
+                url: '/Work/RejectWork',
+                data: { workId: workID, notes: $("#rejectedNotes").val() },
+                contentType: "application/json",
+                dataType: "json",
+                success: function () {
+                    debugger;
+                    location.reload();
+                },
+                error: function () {
+                    alert("error2");
+                }
+            });
+        });
+
+        $.ajax({
+            url: '/Work/CheckAllWorksApproved',
+            data: { taskId:@_taskId},
+            contentType: "application/json",
+            dataType: "json",
+            success: function (data) {
+                debugger
+                if (data) {
+                    $.ajax({
+                        url: '/Task/CheckTaskComplete',
+                        data: { taskId:@_taskId},
+                        contentType: "application/json",
+                        dataType: "json",
+                        success: function (data) {
+                            debugger
+                            if (data) {
+                                $("#submitBtn").prop('hidden', true);
+                                $("#newWork").prop('hidden', true);
+                            }
+                            else
+                                $("#submitBtn").prop('hidden', false);
+                        },
+                        error: function () {
+                            alert("error3");
+                        }
+                    });
+                    
+                }
+            },
+            error: function () {
+                alert("error3");
+            }
+        });
+        $("#submitBtn").click(function () {
+            $.ajax({
+                url: '/Work/CheckAllWorksApproved',
+                data: { taskId: @_taskId},
+                contentType: "application/json",
+                dataType: "json",
+                success: function (data) {
+                    debugger
+                    if (data) {
+                        $.ajax({
+                            url: '/Task/SetStatuseToComplete',
+                            data: { taskId: @_taskId},
+                            contentType: "application/json",
+                            dataType: "json",
+                            success: function () {
+                                debugger
+                                $("#submitBtn").prop('hidden', true);
+                                $("#newWork").prop('hidden', true);
+                                alert('Your Task completed successfully.Thanks for your efforts,It is really appreciated');
+                            },
+                            error: function () {
+                                alert("error4");
+                            }
+                        });
+                    }
+                    else {
+
+                        alert('Not all works are Approved!');
+                    }
+                },
+                error: function () {
+                    alert("error5");
+                }
+            });
+        });
+    });
+    function fillModal(work) {
+        document.getElementById("workTitle").value = work.Title;
+        document.getElementById("workDescription").value = work.Description;
+        debugger;
+        document.getElementById("workFile").innerHTML = work.FileName;
+        document.getElementById("workFile").href = `/Work/GetFile?workId=${work.ID}`;
+        document.getElementById("workFile").target = "_blank";
+
+        if (work.Status ==@((int)HelperClass.Status.Rejected)) {
+            $("#rejectedNotesDev").prop('hidden', false);
+            document.getElementById("rejectedNotes").value = work.RejectedNotes;
+            $("#rejectedNotes").prop('readonly', true);
+        }
+
+    }
+
+    function ShowRejectedButton() {
+        $("#rejectedBtn").show();
+    }
+
+</script>
+
+
+

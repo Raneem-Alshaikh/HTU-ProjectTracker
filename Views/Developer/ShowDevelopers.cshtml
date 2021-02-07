@@ -1,0 +1,47 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+}
+
+<h1>Developers</h1>
+
+<div class="container">
+    <table class="table table-hover table-dark">
+        <thead>
+            <tr>
+                <th scope="col">First Name</th>
+                <th scope="col">Last Name</th>
+                <th scope="col">Email</th>
+                <th scope="col">User Name</th>
+                <th scope="col">Age</th>
+
+
+            </tr>
+        </thead>
+        <tbody>
+
+            @foreach (var developer in (List<Developer>)ViewBag.Developers)
+            {
+            <tr>
+                <td>@developer.FirstName</td>
+                <td>@developer.LastName</td>
+                <td>@developer.Email</td>
+                <td>@developer.UserName</td>
+                <td>@developer.Age</td>
+
+                @if (User.Identity.IsAuthenticated && User.IsInRole("Admin"))
+                {
+                    <td>
+                        <a class="btn btn-info" href="/Developer/ShowEditDeveloper?developerId=@developer.Id">Edit</a>
+                        <a class="btn btn-danger" onclick="return confirm('Are you sure?');" href="/Developer/DeleteDeveloper?Id=@developer.Id">Delete</a>
+                    </td>
+                }
+            </tr>
+            }
+        </tbody>
+    </table>
+    <div>
+        <a class="btn btn-primary" href="/Developer/Create">New Devloper</a>
+    </div>
+</div>

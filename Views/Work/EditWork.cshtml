@@ -1,0 +1,46 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+}
+@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+}
+@using FinalProject.DTO
+@model Work
+
+<form action="/Work/ApplayEdit" method="post" enctype="multipart/form-data">
+
+    @Html.HiddenFor(x => x.ID)
+    @Html.HiddenFor(x => x.DeveloperId);
+    <div class="form-group">
+        @Html.LabelFor(x => x.Title)
+        @Html.TextBoxFor(x => x.Title, new { @class = "form-control", placeholder = "Task Title" })
+    </div>
+
+    <div class="form-group">
+        @Html.LabelFor(x => x.Description)
+        @Html.TextBoxFor(x => x.Description, new { @class = "form-control", placeholder = "Task Description" })
+    </div>
+    <div>
+        @*old file*@
+        @Html.LabelFor(x=>x.workFile)
+        <a href=" /Work/GetFile?workId =@Model.ID" target="_blank">@Model.FileName</a>
+    </div>
+    <div class="form-group">
+        <label for="workFile">Upload Your Work</label>
+        <input type="file" asp-for="workFile" name="workFile" />
+        <span asp-validation-for="workFile" class="text-danger"></span>
+    </div>
+
+    <button type="submit" class="btn btn-primary">Submit</button>
+</form>
+
+<script>
+
+    $(document).ready(function () {
+            $(".news_date").datepicker({ dateFormat: 'dd/mm/yy' });
+});
+</script>

@@ -1,0 +1,53 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+}
+@using FinalProject.DTO
+@model CreateProjectDto
+
+<form action="/Project/InsertProject">
+
+    <div class="form-group">
+        @Html.LabelFor(x => x.ProjectTitle)
+        @Html.TextBoxFor(x => x.ProjectTitle, new { @class = "form-control", placeholder = "Project Title" })
+        <span asp-validation-for="ProjectTitle" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        @Html.LabelFor(x => x.Description)
+        @Html.TextBoxFor(x => x.Description, new { @class = "form-control", placeholder = "Project Description" })
+        <span asp-validation-for="Description" class="text-danger"></span>
+    </div>
+
+
+    <div class="form-group">
+        <label>Team Leader</label><br />
+        <select class="js-select" name="TeamLeaderID" multiple>
+            @foreach (var teamLeader in (List<TeamLeader>)ViewBag.teamLeaders)
+            {
+                <option value="@teamLeader.Id">@(teamLeader.FirstName+" "+teamLeader.LastName)</option>
+            }
+        </select>
+        <span asp-validation-for="TeamLeaderID" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <label>Developers</label><br />
+        <select class="js-select" name="developersIds" multiple>
+            @foreach (var developer in (List<Developer>)ViewBag.developers)
+            {
+                <option value="@developer.Id">@(developer.FirstName+" "+ developer.LastName)</option>
+            }
+        </select>
+        <span asp-validation-for="developersIds" class="text-danger"></span>
+    </div>
+
+    <button type="submit" class="btn btn-primary">Submit</button>
+</form>
+
+<script>
+    $(document).ready(function () {
+        $('.js-select').select2();
+    });
+</script>

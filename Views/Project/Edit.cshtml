@@ -1,0 +1,59 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+}
+@using FinalProject.DTO
+@model EditProjectDto
+
+<form action="/Project/ApplayEdit">
+
+    @Html.HiddenFor(x => x.ID)
+    <div class="form-group">
+        @Html.LabelFor(x => x.ProjectTitle)
+        @Html.TextBoxFor(x => x.ProjectTitle, new { @class = "form-control", placeholder = "Project Title" })
+    </div>
+
+    <div class="form-group">
+        @Html.LabelFor(x => x.Description)
+        @Html.TextBoxFor(x => x.Description, new { @class = "form-control", placeholder = "Project Description" })
+    </div>
+
+    @Html.HiddenFor(x => x.Status)
+    <div class="form-group">
+        <label>Team Leader</label><br />
+        <select class="js-select" name="TeamLeaderID">
+            @foreach (var teamleader in (List<TeamLeader>)ViewBag.unselectedLeaders)
+            {
+                <option value="@teamleader.Id">@(teamleader.FirstName+teamleader.LastName)</option>
+            }
+
+            <option selected value="@Model.TeamLeader.Id">@(Model.TeamLeader.FirstName + Model.TeamLeader.LastName)</option>
+
+        </select>
+    </div>
+
+    <div class="form-group">
+        <label>Developer</label><br />
+        <select class="js-select" name="developersIds" multiple>
+            @foreach (var developer in (List<Developer>)ViewBag.unselectedDevelopers)
+            {
+                <option value="@developer.Id">@(developer.FirstName+developer.LastName)</option>
+            }
+
+            @foreach (var projectDeveloper in ViewBag.selectedDevelopers)
+            {
+                <option selected value="@projectDeveloper.Id">@(projectDeveloper.FirstName+ projectDeveloper.LastName)</option>
+            }
+        </select>
+    </div>
+
+
+    <button type="submit" class="btn btn-primary">Submit</button>
+</form>
+
+<script>
+    $(document).ready(function () {
+        $('.js-select').select2();
+    });
+</script>

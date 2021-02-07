@@ -1,0 +1,48 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+}
+
+<h1>Project Managers</h1>
+
+<div class="container">
+    <table class="table table-hover table-dark">
+        <thead>
+            <tr>
+                <th scope="col">First Name</th>
+                <th scope="col">Last Name</th>
+                <th scope="col">Email</th>
+                <th scope="col">User Name</th>
+                <th scope="col">Age</th>
+
+
+            </tr>
+        </thead>
+        <tbody>
+
+            @foreach (var projectManager in (List<ProjectManager>)ViewBag.ProjectManagers)
+            {
+             <tr>
+                <td>@projectManager.FirstName</td>
+                <td>@projectManager.LastName</td>
+                <td>@projectManager.Email</td>
+                <td>@projectManager.UserName</td>
+                <td>@projectManager.Age</td>
+
+                @if (User.Identity.IsAuthenticated && User.IsInRole("Admin"))
+                {
+                    <td>
+                        <a class="btn btn-info" href="/ProjectManager/ShowEditProjectManager?projectManagerId=@projectManager.Id">Edit</a>
+                        <a class="btn btn-danger" onclick="return confirm('Are you sure?');" href="/ProjectManager/DeleteProjectManager?Id=@projectManager.Id">Delete</a>
+                    </td>
+                }
+             </tr>
+
+            }
+        </tbody>
+    </table>
+    <div>
+        <a class="btn btn-primary" href="/ProjectManager/Create">New Project Manager</a>
+    </div>
+</div>

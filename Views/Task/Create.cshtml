@@ -1,0 +1,49 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+}
+@using FinalProject.DTO
+@model CreateTaskDto
+
+<form action="/Task/InsertTask">
+
+    <div class="form-group">
+        @Html.LabelFor(x => x.Title)
+        @Html.TextBoxFor(x => x.Title, new { @class = "form-control", placeholder = "Task Title" })
+    </div>
+
+    <div class="form-group">
+        @Html.LabelFor(x => x.Description)
+        @Html.TextBoxFor(x => x.Description, new { @class = "form-control", placeholder = "Task Description" })
+    </div>
+    <div class="form-group">
+        <label>Developer</label><br />
+        <select class="custom-select" name="DeveloperId">
+            <option value="@null">Select Developer</option>
+
+            @foreach (var developer in (List<Developer>)ViewBag.developers)
+            {
+                <option value="@developer.Id">@(developer.FirstName+" "+developer.LastName)</option>
+            }
+        </select>
+    </div>
+    <div class="form-group">
+        @Html.LabelFor(x => x.StartDate)
+        @Html.EditorFor(x => x.StartDate, new { @class = "news_date" })
+    </div>
+
+    <div class="form-group">
+        @Html.LabelFor(x => x.EndDate)
+        @Html.EditorFor(x => x.EndDate, new { @class = "news_date" })
+    </div>
+
+    <button type="submit" class="btn btn-primary">Submit</button>
+</form>
+
+<script>
+   
+    $(document).ready(function () {
+            $(".news_date").datepicker({ dateFormat: 'dd/mm/yy' });
+});
+</script>

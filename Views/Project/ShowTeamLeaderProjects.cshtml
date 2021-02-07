@@ -1,0 +1,64 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+}
+@using System.ComponentModel.DataAnnotations;
+@using System.Reflection;
+@model Project
+<h1>Your Projects</h1>
+
+<div class="container">
+    <table class="table table-hover table-dark">
+        <thead>
+            <tr>
+                <th scope="col">Title</th>
+                <th scope="col">Description</th>
+                <th scope="col">Project Manager</th>
+                <th scope="col">Developers</th>
+                <th scope="col">Status</th>
+
+
+            </tr>
+        </thead>
+        <tbody>
+
+            @foreach (var project in (List<Project>)ViewBag.projects)
+            {
+            <tr>
+                <td>@project.ProjectTitle</td>
+                <td>@project.Description</td>
+                <td>@(project.projectManager.FirstName+" "+project.projectManager.LastName)</td>
+                <td>
+                    @foreach (var developer in project.ProjectsDevelopers)
+                    {
+                        <span>@(developer.Developer.FirstName + " " + developer.Developer.LastName)</span><br />
+                    }
+                </td>
+                @if (project.Status == HelperClass.Status.PendingApproval)
+                {
+
+                    <td>
+                        @(project.Status.GetType().GetMember(project.Status.ToString()).First().GetCustomAttribute<DisplayAttribute>().GetName())
+                    </td>
+                }
+                else
+                {
+                    <td>
+                        @project.Status
+                    </td>
+                }
+                    @if (User.Identity.IsAuthenticated && User.IsInRole("TeamLeader"))
+                    {
+                        <td>
+                            <a class="btn btn-info" href="/Sprint/ShowProjectSprints?projectId=@project.ID">Sprints</a>
+                        </td>
+                    }
+                </tr>
+            }
+        </tbody>
+    </table>
+
+</div>
+
+

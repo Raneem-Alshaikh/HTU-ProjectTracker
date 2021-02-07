@@ -1,0 +1,162 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+}
+@using System.ComponentModel.DataAnnotations;
+@using System.Reflection;
+@model Sprint
+
+@{ 
+    var sprints = (List<Sprint>)ViewBag.sprints;
+    var _projectId = ViewBag.projectId;
+}
+<h1>Project Sprint</h1>
+
+<div class="container">
+    <div>
+        <a id="submitBtn" class="btn btn-primary" hidden style="float:right">Submit All Sprints</a>
+    </div>
+    <table class="table table-hover table-dark">
+        <thead>
+            <tr>
+                <th scope="col">Title</th>
+                <th scope="col">Description</th>
+                <th scope="col">Start Date</th>
+                <th scope="col">End Date</th>
+                <th scope="col">Status</th>
+            </tr>
+        </thead>
+        <tbody>
+
+            @foreach (var sprint in sprints)
+            {
+                <tr>
+                    <td>@sprint.Title</td>
+                    <td>@sprint.Description</td>
+                    <td>@sprint.StartDate</td>
+                    <td>@sprint.EndDate</td>
+                    @if (sprint.Status == HelperClass.Status.PendingApproval)
+                    {
+                        <td>
+                            @(sprint.Status.GetType().GetMember(sprint.Status.ToString()).First().GetCustomAttribute<DisplayAttribute>().GetName())
+                        </td>
+                    }
+                    else
+                    {
+                        <td>@sprint.Status</td>
+                    }
+                    @if (User.Identity.IsAuthenticated && User.IsInRole("TeamLeader"))
+                    {
+                        <td>
+                            <a class="btn btn-info" href="/Task/ShowSprintTasks?sprintId=@sprint.ID">Tasks</a>
+                        </td>
+                    }
+                </tr>
+            }
+        </tbody>
+    </table>
+    @if (User.Identity.IsAuthenticated && User.IsInRole("TeamLeader"))
+    {
+        <div>
+            <a id="newSprint" style="float:right" class="btn btn-primary" href="/Sprint/Create">New Sprint</a>
+        
+            <a class="btn btn-primary" style="float:left" href="/Project/ShowTeamLeaderProjects"> Go To Projects </a>
+        </div>
+    }
+</div>
+
+<script>
+
+    $('document').ready(function () {
+
+        $.ajax({
+            url: '/Sprint/CheckProjectSprintsComplete',
+            data: { projectId:@_projectId},
+            contentType: "application/json",
+            dataType: "json",
+            success: function (data) {
+                debugger
+                if (data) {
+                    $.ajax({
+                        url: '/Project/CheckProjectComplete',
+                        data: { projectId:@_projectId},
+                        contentType: "application/json",
+                        dataType: "json",
+                        success: function (data) {
+                            debugger
+                            if (data) {
+                                $("#submitBtn").prop('hidden', true);
+                                $("#newSprint").prop('hidden', true);
+                            }
+                            else
+                                $("#submitBtn").prop('hidden', false);
+                        },
+                        error: function () {
+                            alert("error3");
+                        }
+                    });
+
+                }
+            },
+            error: function () {
+                alert("error3");
+            }
+        });
+
+        @*$.ajax({
+            url: '/Project/CheckProjectComplete',
+            data: { projectId:@_projectId},
+            contentType: "application/json",
+            dataType: "json",
+            success: function (data) {
+                debugger
+                if (data) {
+                    $("#submitBtn").prop('hidden', true);
+                    $("#newSprint").prop('hidden', true);
+                }
+                else
+                    $("#submitBtn").prop('hidden', false);
+            },
+            error: function () {
+                alert("error3");
+            }
+        });*@
+
+        $("#submitBtn").click(function () {
+            $.ajax({
+                url: '/Sprint/CheckProjectSprintsComplete',
+                data: { projectId:@_projectId},
+                contentType: "application/json",
+                dataType: "json",
+                success: function (data) {
+                    debugger
+                    if (data) {
+                        $.ajax({
+                            url: '/Project/SetStatuseToComplete',
+                            data: { projectId: @_projectId},
+                            contentType: "application/json",
+                            dataType: "json",
+                            success: function () {
+                                debugger
+                                $("#submitBtn").prop('hidden', true);
+                                $("#newWork").prop('hidden', true);
+                                alert('Your Project completed successfully.Thanks for your efforts,It is really appreciated');
+                            },
+                            error: function () {
+                                alert("error4");
+                            }
+                        });
+                    }
+                    else {
+
+                        alert('Not all Spritns are Completed!');
+                    }
+                },
+                error: function () {
+                    alert("error5");
+                }
+            });
+        });
+    });
+</script>

@@ -1,0 +1,47 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+}
+
+<h1>Team Leaders</h1>
+
+<div class="container">
+    <table class="table table-hover table-dark">
+        <thead>
+            <tr>
+                <th scope="col">First Name</th>
+                <th scope="col">Last Name</th>
+                <th scope="col">Email</th>
+                <th scope="col">User Name</th>
+                <th scope="col">Age</th>
+
+
+            </tr>
+        </thead>
+        <tbody>
+
+            @foreach (var teamLeader in (List<TeamLeader>)ViewBag.TeamLeaders)
+            {
+            <tr>
+                <td>@teamLeader.FirstName</td>
+                <td>@teamLeader.LastName</td>
+                <td>@teamLeader.Email</td>
+                <td>@teamLeader.UserName</td>
+                <td>@teamLeader.Age</td>
+                @if (User.Identity.IsAuthenticated && User.IsInRole("Admin"))
+                {
+
+                    <td>
+                        <a class="btn btn-info" href="/TeamLeader/ShowEditTeamLeader?teamLeaderId=@teamLeader.Id">Edit</a>
+                        <a class="btn btn-danger" onclick="return confirm('Are you sure?');" href="/TeamLeader/DeleteTeamLeader?Id=@teamLeader.Id">Delete</a>
+                    </td>
+                }
+                </tr>
+            }
+        </tbody>
+    </table>
+    <div>
+        <a class="btn btn-primary" href="/TeamLeader/Create">New Team Leader</a>
+    </div>
+</div>

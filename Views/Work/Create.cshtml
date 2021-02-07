@@ -1,0 +1,34 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+}
+@using FinalProject.DTO
+@model CreateWorkDto
+
+<form action="/Work/InsertWork" method="post" enctype="multipart/form-data">
+
+    <div class="form-group">
+        @Html.LabelFor(x => x.Title)
+        @Html.TextBoxFor(x => x.Title, new { @class = "form-control", placeholder = "Task Title" })
+    </div>
+
+    <div class="form-group">
+        @Html.LabelFor(x => x.Description)
+        @Html.TextBoxFor(x => x.Description, new { @class = "form-control", placeholder = "Task Description" })
+    </div>
+    <div class="form-group">
+        <label for="workFile">Upload Your Work</label>
+        <input type="file" name="workFile" />
+        <span asp-validation-for="workFile" class="text-danger"></span>
+    </div>
+
+    <button type="submit" class="btn btn-primary">Submit</button>
+</form>
+
+<script>
+
+    $(document).ready(function () {
+            $(".news_date").datepicker({ dateFormat: 'dd/mm/yy' });
+});
+</script>

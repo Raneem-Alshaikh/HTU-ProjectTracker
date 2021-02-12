@@ -47,7 +47,7 @@
                 {
                     <td>@project.Status</td>
                 }
-                @if (User.Identity.IsAuthenticated && User.IsInRole("ProjectManager"))
+                @if (User.Identity.IsAuthenticated && User.IsInRole("ProjectManager")&& project.Status!=HelperClass.Status.Complete)
                 {
                     <td>
                         <a class="btn btn-info" href="/Project/ShowEditProject?projectId=@project.ID">Edit</a>

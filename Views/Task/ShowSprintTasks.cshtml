@@ -47,14 +47,15 @@
                     }
                     @if (User.Identity.IsAuthenticated)
                     {
-                        <td>
-                            <a class="btn btn-info" href="/Work/ShowTaskWorks?taskId=@task.ID">Works</a>
-                            @if (User.Identity.IsAuthenticated && User.IsInRole("TeamLeader"))
-                            {
-                                <a class="btn btn-info" href="/Task/ShowEditTask?taskId=@task.ID">Edit</a>
-                            }
+                <td>
+                    <a class="btn btn-info" href="/Work/ShowTaskWorks?taskId=@task.ID">Works</a>
+                    @if (User.Identity.IsAuthenticated && User.IsInRole("TeamLeader") && task.Status != HelperClass.Status.Complete)
+                    {
+                        <a class="btn btn-info" href="/Task/ShowEditTask?taskId=@task.ID">Edit</a>
+                        <a class="btn btn-danger" onclick="return confirm('Are you sure?');" href="/Task/DeleteTask?taskId=@task.ID">Delete</a>
+                    }
 
-                        </td>
+                </td>
                     }
 
                 </tr>

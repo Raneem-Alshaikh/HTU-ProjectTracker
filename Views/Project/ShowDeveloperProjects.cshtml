@@ -9,45 +9,53 @@
 <h1>Your Projects</h1>
 
 <div class="container">
-    <table class="table table-hover table-dark">
-        <thead>
-            <tr>
-                <th scope="col">Title</th>
-                <th scope="col">Description</th>
-                <th scope="col">Team Leader</th>
-                <th scope="col">Status</th>
+    <div class="table-responsive">
+        <table class="table table-bordered table-hover table-dark" id="dataTable" width="100%" cellspacing="0">
+
+            @*<table class="table table-hover table-dark">*@
+                <thead>
+                    <tr>
+                        <th scope="col">Title</th>
+                        <th scope="col">Description</th>
+                        <th scope="col">Team Leader</th>
+                        <th scope="col">Status</th>
 
 
-            </tr>
-        </thead>
-        <tbody>
+                    </tr>
+                </thead>
+                <tbody>
 
-            @foreach (var project in (List<Project>)ViewBag.projects)
-            {
-            <tr>
-                <td>@project.ProjectTitle</td>
-                <td>@project.Description</td>
-                <td>@(project.TeamLeader.FirstName+" "+project.TeamLeader.LastName)</td>
-                @if (project.Status == HelperClass.Status.PendingApproval)
-                {
-                    <td>
-                        @(project.Status.GetType().GetMember(project.Status.ToString()).First().GetCustomAttribute<DisplayAttribute>().GetName())
-                    </td>
-                }
-                else
-                {
-                    <td>@project.Status</td>
-                }
+                    @foreach (var project in (List<Project>)ViewBag.projects)
+                    {
+                        <tr>
+                            <td>@project.ProjectTitle</td>
+                            <td>@project.Description</td>
+                            <td>@(project.TeamLeader.FirstName+" "+project.TeamLeader.LastName)</td>
+                            @if (project.Status == HelperClass.Status.PendingApproval)
+                            {
+                                <td>
+                                    @(project.Status.GetType().GetMember(project.Status.ToString()).First().GetCustomAttribute<DisplayAttribute>().GetName())
+                                </td>
+                            }
+                            else
+                            {
+                                <td>@project.Status</td>
+                            }
 
-                @if (User.Identity.IsAuthenticated && User.IsInRole("Developer"))
-                {
-                    <td>
-                        <a class="btn btn-info" href="/Task/ShowProjectTasks?projectId=@project.ID">Sprints</a>
-                    </td>
-                }
-            </tr>
-            }
-        </tbody>
-    </table>
-
-</div>
+                            @if (User.Identity.IsAuthenticated && User.IsInRole("Developer"))
+                            {
+                                <td>
+                                    <a class="btn btn-info" href="/Task/ShowProjectTasks?projectId=@project.ID">Sprints</a>
+                                </td>
+                            }
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+<script>
+    $(document).ready(function () {
+        $('#dataTable').DataTable();
+    });
+</script>

@@ -50,19 +50,20 @@
                     {
                         <td>@work.Status</td>
                     }
-                    <td>
-                        @if (User.Identity.IsAuthenticated && User.IsInRole("TeamLeader") && work.Status == HelperClass.Status.PendingApproval)
-                        {
-                            <a id="approvedBtn" class="btn btn-info" href="/Work/ApproveWork?workId=@work.ID">Approve</a>
-                        }
-                        @if (User.Identity.IsAuthenticated && User.IsInRole("Developer") && work.Status != HelperClass.Status.Approved)
-                        {
-                            <a class="btn btn-info" href="/Work/EditWork?workId=@work.ID">Edit</a>
-                        }
-                        <input type="button" value="View" id="@work.ID" class="viewModal btn btn-primary" data-toggle="modal" data-target="#exampleModalCenter">
+                <td>
+                    @if (User.Identity.IsAuthenticated && User.IsInRole("TeamLeader") && work.Status == HelperClass.Status.PendingApproval)
+                    {
+                        <a id="approvedBtn" class="btn btn-info" href="/Work/ApproveWork?workId=@work.ID">Approve</a>
+                    }
+                    @if (User.Identity.IsAuthenticated && User.IsInRole("Developer") && work.Status != HelperClass.Status.Approved)
+                    {
+                        <a class="btn btn-info" href="/Work/EditWork?workId=@work.ID">Edit</a>
+                        <a class="btn btn-danger" onclick="return confirm('Are you sure?');" href="/Work/DeleteWork?taskId=@work.ID">Delete</a>
+                    }
+                    <input type="button" value="View" id="@work.ID" class="viewModal btn btn-primary" data-toggle="modal" data-target="#exampleModalCenter">
 
-                        @*<a class="btn btn-info" href="/Work/EditWork?workId=@work.ID">View</a>*@
-                    </td>
+                    @*<a class="btn btn-info" href="/Work/EditWork?workId=@work.ID">View</a>*@
+                </td>
                 </tr>
             }
         </tbody>

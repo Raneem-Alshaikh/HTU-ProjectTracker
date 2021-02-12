@@ -5,30 +5,45 @@
 }
 @using FinalProject.DTO
 @model CreateWorkDto
+    <div>
+        <div>
+            <main>
+                <div class="container">
+                    <div class="row justify-content-center">
+                        <div class="col">
+                            <div class="card shadow-lg border-0 rounded-lg mt-5">
+                                <div class="card-header"><h3 class="text-center font-weight-light my-4">Create Work</h3></div>
+                                <div class="card-body">
+                                    <form action="/Work/InsertWork" method="post" enctype="multipart/form-data">
 
-<form action="/Work/InsertWork" method="post" enctype="multipart/form-data">
+                                        <div class="form-group">
+                                            @Html.LabelFor(x => x.Title)
+                                            @Html.TextBoxFor(x => x.Title, new { @class = "form-control", placeholder = "Task Title" })
+                                        </div>
 
-    <div class="form-group">
-        @Html.LabelFor(x => x.Title)
-        @Html.TextBoxFor(x => x.Title, new { @class = "form-control", placeholder = "Task Title" })
+                                        <div class="form-group">
+                                            @Html.LabelFor(x => x.Description)
+                                            @Html.TextBoxFor(x => x.Description, new { @class = "form-control", placeholder = "Task Description" })
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="workFile">Upload Your Work</label>
+                                            <input type="file" name="workFile" />
+                                            <span asp-validation-for="workFile" class="text-danger"></span>
+                                        </div>
+
+                                        <button type="submit" class="btn btn-primary">Submit</button>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </main>
+        </div>
     </div>
+    <script>
 
-    <div class="form-group">
-        @Html.LabelFor(x => x.Description)
-        @Html.TextBoxFor(x => x.Description, new { @class = "form-control", placeholder = "Task Description" })
-    </div>
-    <div class="form-group">
-        <label for="workFile">Upload Your Work</label>
-        <input type="file" name="workFile" />
-        <span asp-validation-for="workFile" class="text-danger"></span>
-    </div>
-
-    <button type="submit" class="btn btn-primary">Submit</button>
-</form>
-
-<script>
-
-    $(document).ready(function () {
+        $(document).ready(function () {
             $(".news_date").datepicker({ dateFormat: 'dd/mm/yy' });
-});
-</script>
+        });
+    </script>

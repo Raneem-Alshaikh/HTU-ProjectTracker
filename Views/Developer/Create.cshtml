@@ -5,48 +5,63 @@
 }
 @using FinalProject.DTO
 @model CreateUserDto
+    <div>
+        <div>
+            <main>
+                <div class="container">
+                    <div class="row justify-content-center">
+                        <div class="col">
+                            <div class="card shadow-lg border-0 rounded-lg mt-5">
+                                <div class="card-header"><h3 class="text-center font-weight-light my-4">Create Developer</h3></div>
+                                <div class="card-body">
+                                    <form action="/Developer/InsertDeveloper" enctype="multipart/form-data" class="container">
 
-<form action="/Developer/InsertDeveloper" enctype="multipart/form-data" class="container">
+                                        <div class="form-group">
+                                            @Html.LabelFor(x => x.FirstName)
+                                            @Html.TextBoxFor(x => x.FirstName, new { @class = "form-control", placeholder = "Enter First Name" })
+                                            <span asp-validation-for="FirstName" class="text-danger"></span>
+                                        </div>
 
-    <div class="form-group">
-        @Html.LabelFor(x => x.FirstName)
-        @Html.TextBoxFor(x => x.FirstName, new { @class = "form-control", placeholder = "Enter First Name" })
-        <span asp-validation-for="FirstName" class="text-danger"></span>
+                                        <div class="form-group">
+                                            <label for="lastName">Last Name</label>
+                                            @Html.TextBoxFor(x => x.LastName, new { @class = "form-control", placeholder = "Enter Last Name" })
+                                            @Html.ValidationMessageFor(x => x.LastName)
+                                            <span asp-validation-for="LastName" class="text-danger"></span>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="age">Age</label>
+                                            @Html.TextBoxFor(x => x.Age, new { @class = "form-control", placeholder = "Enter Age" })
+                                        </div>
+
+                                        <div class="form-group">
+                                            <label for="email">Email</label>
+                                            @Html.TextBoxFor(x => x.Email, new { @class = "form-control", placeholder = "Enter Email" })
+                                            <span asp-validation-for="Email" class="text-danger"></span>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="password">Password</label>
+                                            @Html.PasswordFor(x => x.Password, new { @class = "form-control", placeholder = "Enter Password" })
+                                            <span asp-validation-for="Password" class="text-danger"></span>
+                                        </div>
+                                        <div class="form-group">
+                                            @Html.LabelFor(x => x.ConfirmPassword)
+                                            @Html.PasswordFor(x => x.ConfirmPassword, new { @class = "form-control", placeholder = "Enter Password again" })
+                                            <span asp-validation-for="ConfirmPassword" class="text-danger"></span>
+                                        </div>
+
+
+                                        <button type="submit" class="btn btn-primary">Submit</button>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </main>
+        </div>
     </div>
-
-    <div class="form-group">
-        <label for="lastName">Last Name</label>
-        @Html.TextBoxFor(x => x.LastName, new { @class = "form-control", placeholder = "Enter Last Name" })
-        @Html.ValidationMessageFor(x => x.LastName)
-        <span asp-validation-for="LastName" class="text-danger"></span>
-    </div>
-    <div class="form-group">
-        <label for="age">Age</label>
-        @Html.TextBoxFor(x => x.Age, new { @class = "form-control", placeholder = "Enter Age" })
-    </div>
-
-    <div class="form-group">
-        <label for="email">Email</label>
-        @Html.TextBoxFor(x => x.Email, new { @class = "form-control", placeholder = "Enter Email" })
-        <span asp-validation-for="Email" class="text-danger"></span>
-    </div>
-    <div class="form-group">
-        <label for="password">Password</label>
-        @Html.PasswordFor(x => x.Password, new { @class = "form-control", placeholder = "Enter Password" })
-        <span asp-validation-for="Password" class="text-danger"></span>
-    </div>
-    <div class="form-group">
-        @Html.LabelFor(x => x.ConfirmPassword)
-        @Html.PasswordFor(x => x.ConfirmPassword, new { @class = "form-control", placeholder = "Enter Password again" })
-        <span asp-validation-for="ConfirmPassword" class="text-danger"></span>
-    </div>
-
-
-    <button type="submit" class="btn btn-primary">Submit</button>
-</form>
-
-<script>
-    $(document).ready(function () {
-        $('.js-select').select2();
-    });
-</script>
+    <script>
+        $(document).ready(function () {
+            $('.js-select').select2();
+        });
+    </script>

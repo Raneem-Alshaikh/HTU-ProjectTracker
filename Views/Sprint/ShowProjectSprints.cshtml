@@ -31,28 +31,38 @@
 
             @foreach (var sprint in sprints)
             {
-                <tr>
-                    <td>@sprint.Title</td>
-                    <td>@sprint.Description</td>
-                    <td>@sprint.StartDate</td>
-                    <td>@sprint.EndDate</td>
-                    @if (sprint.Status == HelperClass.Status.PendingApproval)
-                    {
-                        <td>
-                            @(sprint.Status.GetType().GetMember(sprint.Status.ToString()).First().GetCustomAttribute<DisplayAttribute>().GetName())
-                        </td>
-                    }
-                    else
-                    {
-                        <td>@sprint.Status</td>
-                    }
-                    @if (User.Identity.IsAuthenticated && User.IsInRole("TeamLeader"))
-                    {
-                        <td>
-                            <a class="btn btn-info" href="/Task/ShowSprintTasks?sprintId=@sprint.ID">Tasks</a>
-                        </td>
-                    }
-                </tr>
+            <tr>
+                <td>@sprint.Title</td>
+                <td>@sprint.Description</td>
+                <td>@sprint.StartDate</td>
+                <td>@sprint.EndDate</td>
+                @if (sprint.Status == HelperClass.Status.PendingApproval)
+                {
+                    <td>
+                        @(sprint.Status.GetType().GetMember(sprint.Status.ToString()).First().GetCustomAttribute<DisplayAttribute>().GetName())
+                    </td>
+                }
+                else
+                {
+                    <td>@sprint.Status</td>
+                }
+                
+                @if (User.Identity.IsAuthenticated && User.IsInRole("TeamLeader") && sprint.Status != HelperClass.Status.Complete)
+                {
+                 <td>
+                    <a class="btn btn-info" href="/Sprint/ShowEditSprint?taskId=@sprint.ID">Edit</a>
+                    <a class="btn btn-danger" onclick="return confirm('Are you sure?');" href="/Sprint/DeleteSprint?taskId=@sprint.ID">Delete</a>
+                 </td>
+                }
+
+
+                @if (User.Identity.IsAuthenticated && User.IsInRole("TeamLeader"))
+                {
+                    <td>
+                        <a class="btn btn-info" href="/Task/ShowSprintTasks?sprintId=@sprint.ID">Tasks</a>
+                    </td>
+                }
+            </tr>
             }
         </tbody>
     </table>

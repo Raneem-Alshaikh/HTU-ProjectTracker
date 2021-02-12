@@ -5,52 +5,68 @@
 }
 @using FinalProject.DTO
 @model CreateSprintDto
+    <div>
+        <div>
+            <main>
+                <div class="container">
+                    <div class="row justify-content-center">
+                        <div class="col">
+                            <div class="card shadow-lg border-0 rounded-lg mt-5">
+                                <div class="card-header"><h3 class="text-center font-weight-light my-4">Create Sprint</h3></div>
+                                <div class="card-body">
+                                    <form action="/Sprint/InsertSprint">
 
-<form action="/Sprint/InsertSprint">
+                                        <div class="form-group">
+                                            @Html.LabelFor(x => x.Title)
+                                            @Html.TextBoxFor(x => x.Title, new { @class = "form-control", placeholder = "Sprint Title" })
+                                            <span asp-validation-for="Title" class="text-danger"></span>
+                                        </div>
 
-    <div class="form-group">
-        @Html.LabelFor(x => x.Title)
-        @Html.TextBoxFor(x => x.Title, new { @class = "form-control", placeholder = "Sprint Title" })
-        <span asp-validation-for="Title" class="text-danger"></span>
+                                        <div class="form-group">
+                                            @Html.LabelFor(x => x.Description)
+                                            @Html.TextBoxFor(x => x.Description, new { @class = "form-control", placeholder = "Sprint Description" })
+                                            <span asp-validation-for="Description" class="text-danger"></span>
+                                        </div>
+
+                                        <div class="form-group">
+                                            @Html.LabelFor(x => x.StartDate)
+                                            <input name="StartDate" id="startDate" class="new_date" required type="date" data-date-format="dd/mm/yy">
+                                            <span asp-validation-for="StartDate" class="text-danger"></span>
+                                        </div>
+
+                                        <div class="form-group">
+                                            @Html.LabelFor(x => x.EndDate)
+                                            <input name="EndDate" id="endDate" class="new_date" required type="date" data-date-format="dd/mm/yy"><br />
+                                            <span asp-validation-for="EndDate" class="text-danger"></span>
+                                        </div>
+
+                                        <button type="submit" class="btn btn-primary">Submit</button>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </main>
+        </div>
     </div>
 
-    <div class="form-group">
-        @Html.LabelFor(x => x.Description)
-        @Html.TextBoxFor(x => x.Description, new { @class = "form-control", placeholder = "Sprint Description" })
-        <span asp-validation-for="Description" class="text-danger"></span>
-    </div>
+    <script>
 
-    <div class="form-group">
-        @Html.LabelFor(x => x.StartDate)
-        <input name="StartDate" id="startDate" class="new_date" required type="date" data-date-format="dd/mm/yy">
-        <span asp-validation-for="StartDate" class="text-danger"></span>
-    </div>
-
-    <div class="form-group">
-        @Html.LabelFor(x => x.EndDate)
-        <input name="EndDate" id="endDate" class="new_date"  required type="date" data-date-format="dd/mm/yy"><br />
-        <span asp-validation-for="EndDate" class="text-danger"></span>
-    </div>
-
-    <button type="submit" class="btn btn-primary">Submit</button>
-</form>
-
-<script>
-    
-    function checkDate() {
-        var selectedText = $('.new_date').val();
-        var selectedDate = new Date(selectedText);
-        var now = new Date();
-        if (selectedDate < now) {
-            $("#endDateError").html("Date conn't be in the past");
-            alert("Date must be in the future");
+        function checkDate() {
+            var selectedText = $('.new_date').val();
+            var selectedDate = new Date(selectedText);
+            var now = new Date();
+            if (selectedDate < now) {
+                $("#endDateError").html("Date conn't be in the past");
+                alert("Date must be in the future");
+            }
         }
-    }
-    $(document).ready(function () {
-        $('.js-select').select2();
-        $(".new_date").datepicker({ dateFormat: 'dd/mm/yy' });
-    });
-        
+        $(document).ready(function () {
+            $('.js-select').select2();
+            $(".new_date").datepicker({ dateFormat: 'dd/mm/yy' });
+        });
+
 
         $(".new_date").datepicker({
             changeMonth: true,
@@ -73,12 +89,12 @@
             var startDate = new Date($('#startDate').val());
             var endDate = new Date($('#endDate').val());
 
-            if (endDate < startDate ) {
+            if (endDate < startDate) {
                 $("#endDate").html("End Date less than Satrt Date!");
                 alert("End Date less than Satrt Date!");
             }
         });
-        
-    
-    
-</script>
+
+
+
+    </script>
